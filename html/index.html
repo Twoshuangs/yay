@@ -1,16 +1,60 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
-<div class="video-container">
-  <video>
-    <source src="trailer.mp4" type="video/mp4" />
-  </video>
-</div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUI Focus Tracker</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: black;
+            color: green;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #terminal {
+            width: 90%;
+            max-width: 800px;
+            height: 80%;
+            border: 1px solid green;
+            padding: 10px;
+            overflow-y: auto;
+        }
+        #input {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        #input span {
+            margin-right: 5px;
+        }
+        #command {
+            background: transparent;
+            border: none;
+            color: green;
+            outline: none;
+            flex: 1;
+        }
+        #output div {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal">
+        <div id="output">
+            <div>Welcome to the Focus Tracker TUI!</div>
+            <div>Type `help` for a list of commands.</div>
+        </div>
+        <div id="input">
+            <span>$</span>
+            <input type="text" id="command" autocomplete="off" />
+        </div>
+    </div>
 
-<div class="topnav">
-  <a class="active" href="#home">Home</a>
-  <a href="#news">News</a>
-  <a href="#contact">Contact</a>
-  <a href="#about">About</a>
-</div>
-
+    <script src="app.js"></script>
+</body>
 </html>
