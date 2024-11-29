@@ -1,6 +1,37 @@
 // Initialize task list
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
+const bonsai ="                                        
+             &  &                       
+            &&&&&   &                   
+              \|  &&&&& &&&&&           
+              \&  &&&/&&&&&& &          
+           & &|// & &~&&&&&&            
+            &|\&& &&\&&&&&|&&&          
+           &&~~&   &&& |&&~~~           
+    & && && /  \\~|&\\~&~~ /            
+     \ |  /      ~/~|~~ &~              
+       ~~~ |     | /~/ |                
+           \    |~\~ / \                
+             ~~~~ ~/|   ~~              
+                \|~|/   /               
+                 ||/   |                
+                 \~\   ~|               
+                   \ ~| /               
+                    \/~~                
+                    ~\~                 
+                    |~ ~/               
+                    |/ ~                
+                   \\                   
+                   |/ ~                 
+                   /                    
+                 ~                      
+                   ~/                   
+                   ~                    
+                                        
+                                        "
+
+
 // Select elements
 const taskList = document.getElementById("task-list");
 const commandLine = document.getElementById("command-line");
@@ -36,7 +67,8 @@ function processCommand(input) {
 - add [task]: Add a new task.
 - done [index]: Mark a task as completed.
 - remove [index]: Remove a task.
-- clear: Clear the terminal output.`;
+- clear: Clear the terminal output.
+- idle: Enter the idle page.`;
             break;
 
         case "add":
@@ -77,6 +109,10 @@ function processCommand(input) {
             } else {
                 response = "Usage: remove [index]";
             }
+            break;
+
+        case "idle":
+            response = bonsai;
             break;
 
         case "clear":
