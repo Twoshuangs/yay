@@ -1,71 +1,88 @@
+// Initialize task list
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-let focusStart = null;
-let focusDuration = 0;
-let isFocused = false;
+// Select elements
+const taskList = document.getElementById("task-list");
+const commandLine = document.getElementById("command-line");
+const outputDiv = document.getElementById("output");
 
-document.getElementById("command").addEventListener("keydown", function (event) {
+// Render tasks on page load
+renderTaskList();
+
+// Event listener for Enter key
+commandLine.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
-        const input = event.target.value.trim();
-        handleCommand(input);
-        event.target.value = ""; // Clear input field
+        event.preventDefault(); // Prevent adding new lines
+        const input = commandLine.textContent.trim();
+        processCommand(input);
+        commandLine.textContent = ""; // Clear the input
+        highlightSyntax(); // Reset syntax highlighting
     }
 });
 
-function handleCommand(command) {
-    const outputDiv = document.getElementById("output");
+// Event listener for real-time syntax highlighting
+commandLine.addEventListener("input", highlightSyntax);
+
+// Process commands
+function processCommand(input) {
+    const args = input.split(" ");
+    const command = args[0].toLowerCase();
+    const argument = args.slice(1).join(" ");
     let response = "";
 
-    switch (command.toLowerCase()) {
+    switch (command) {
         case "help":
-            response = "Available commands: start, pause, reset, status, fullscreen, exit";
+            response = `Commands:
+- add [task]: Add a new task.
+- list: Refresh the task list.
+- done [index]: Mark a task as completed.
+- remove [index]: Remove a task.
+- clear: Clear the terminal output.`;
             break;
 
-        case "start":
-            if (!isFocused) {
-                focusStart = Date.now();
-                isFocused = true;
-                response = "Focus timer started.";
+        case "add":
+            if (argument) {
+                tasks.push({ text: argument, completed: false });
+                saveTasks();
+                renderTaskList();
+                response = `Task added: "${argument}"`;
             } else {
-                response = "Focus timer is already running.";
+                response = "Usage: add [task]";
             }
             break;
 
-        case "pause":
-            if (isFocused) {
-                focusDuration += Math.floor((Date.now() - focusStart) / 1000); // Update focus time
-                isFocused = false;
-                focusStart = null;
-                response = "Focus timer paused.";
+        // case "list":
+        //     renderTaskList();
+        //     response = "Task list refreshed.";
+        //     break;
+
+        case "done":
+            const doneIndex = parseInt(argument) - 1;
+            if (!isNaN(doneIndex) && tasks[doneIndex]) {
+                tasks[doneIndex].completed = true;
+                saveTasks();
+                renderTaskList();
+                response = `Task marked as completed: "${tasks[doneIndex].text}"`;
             } else {
-                response = "Focus timer is not running.";
+                response = "Usage: done [index]";
             }
             break;
 
-        case "reset":
-            focusStart = null;
-            focusDuration = 0;
-            isFocused = false;
-            response = "Focus timer reset.";
-            break;
-
-        case "status":
-            let totalFocusTime = focusDuration;
-            if (isFocused && focusStart) {
-                totalFocusTime += Math.floor((Date.now() - focusStart) / 1000);
+        case "remove":
+            const removeIndex = parseInt(argument) - 1;
+            if (!isNaN(removeIndex) && tasks[removeIndex]) {
+                const removedTask = tasks.splice(removeIndex, 1)[0];
+                saveTasks();
+                renderTaskList();
+                response = `Task removed: "${removedTask.text}"`;
+            } else {
+                response = "Usage: remove [index]";
             }
-            response = `Total focus time: ${totalFocusTime} seconds.`;
             break;
 
-        case "fullscreen":
-            toggleFullScreen();
-            response = "Fullscreen mode toggled.";
-            break;
-
-        case "exit":
-            response = "Exiting fullscreen mode.";
-            if (document.fullscreenElement) {
-                document.exitFullscreen();
-            }
+        case "clear":
+            outputDiv.innerHTML = "";
+            response = "Terminal cleared.";
             break;
 
         default:
@@ -75,18 +92,31 @@ function handleCommand(command) {
     addOutput(response);
 }
 
-function addOutput(text) {
-    const outputDiv = document.getElementById("output");
-    const newLine = document.createElement("div");
-    newLine.textContent = `$ ${text}`;
-    outputDiv.appendChild(newLine);
-    outputDiv.scrollTop = outputDiv.scrollHeight; // Auto-scroll
+// Render task list
+function renderTaskList() {
+    taskList.innerHTML = ""; // Clear current list
+    tasks.forEach((task, index) => {
+        const li = document.createElement("li");
+        li.className = task.completed ? "completed" : "";
+        li.textContent = `${index + 1}. ${task.text}`;
+        taskList.appendChild(li);
+    });
 }
 
-function toggleFullScreen() {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-    } else if (document.exitFullscreen) {
-        document.exitFullscreen();
-    }
+// Save tasks to localStorage
+function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 }
+
+// Add output to terminal
+function addOutput(text) {
+    const line = document.createElement("div");
+    line.textContent = `$ ${text}`;
+    outputDiv.appendChild(line);
+    outputDiv.scrollTop = outputDiv.scrollHeight; // Auto-scroll to bottom
+}
+
+
+
+
+
