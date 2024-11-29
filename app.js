@@ -34,7 +34,6 @@ function processCommand(input) {
         case "help":
             response = `Commands:
 - add [task]: Add a new task.
-- list: Refresh the task list.
 - done [index]: Mark a task as completed.
 - remove [index]: Remove a task.
 - clear: Clear the terminal output.`;
