@@ -19,7 +19,6 @@ commandLine.addEventListener("keydown", function (event) {
         const input = commandLine.textContent.trim();
         processCommand(input);
         commandLine.textContent = ""; // Clear the input
-        highlightSyntax(); // Reset syntax highlighting
     }
 });
 
@@ -106,7 +105,7 @@ function processCommand(input) {
 
 // Render task list
 function renderTaskList() {
-    taskList.innerHTML = ""; // Clear current list
+    taskList.innerHTML = ""; 
     tasks.forEach((task, index) => {
         const li = document.createElement("li");
         li.className = task.completed ? "completed" : "";
